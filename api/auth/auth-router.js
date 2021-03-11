@@ -63,6 +63,30 @@ router.post('/register', checkUsernameFree(), checkPasswordLength(), async (req,
   }
  */
 
+ router.post('/login', async ( req, res, next) => {
+    try{
+      const { username, password } = req.body
+      const user = await users.findBy({ username }).first()
+
+      //need to hash password to check
+      const passwordValid = await bcrypt.compare(password, user.password)
+
+      if(!passwordValid){
+        res.status(401).json({
+          message: 'Invalid credentials'
+        })
+      }
+
+      req.session.user = user
+
+      res.status(200).json({
+        message: `Welcome ${user.username}!`
+      })
+
+    } catch(err){
+        next(err)
+    }
+ })
 
 /**
   3 [GET] /api/auth/logout
