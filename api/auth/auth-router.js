@@ -38,7 +38,7 @@ router.post('/register', checkUsernameFree(), checkPasswordLength(), async (req,
     const { username, password } = req.body
     const newUser = await users.add({
       username,
-      password: await bcrypt.hash(password, 14)
+      password: await bcrypt.hash(password, 1)
     })
     res.status(201).json(newUser)
 
@@ -63,7 +63,7 @@ router.post('/register', checkUsernameFree(), checkPasswordLength(), async (req,
   }
  */
 
- router.post('/login', async ( req, res, next) => {
+ router.post('/login', checkUsernameExists(),async ( req, res, next) => {
     try{
       const { username, password } = req.body
       const user = await users.findBy({ username }).first()
@@ -72,7 +72,7 @@ router.post('/register', checkUsernameFree(), checkPasswordLength(), async (req,
       const passwordValid = await bcrypt.compare(password, user.password)
 
       if(!passwordValid){
-        res.status(401).json({
+       return res.status(401).json({
           message: 'Invalid credentials'
         })
       }
@@ -104,6 +104,30 @@ router.post('/register', checkUsernameFree(), checkPasswordLength(), async (req,
   }
  */
 
+ router.get('/logout', async (req, res, next) => {
+   try {
+      if(!req.session.user){
+       return res.status(200).json({
+         message: "no session"
+       })
+     }
+
+     req.session.destroy((err) => {
+       if (err) {
+         return res.status(200).json({
+           message: "no session"
+         })
+       } 
+       else {
+         res.status(200).json({
+           message: 'logged out'
+         })
+       }
+     })
+   } catch(err){
+     next(err)
+   }
+ })
  
 // Don't forget to add the router to the `exports` object so it can be required in other modules
 module.exports = router

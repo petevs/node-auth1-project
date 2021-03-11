@@ -25,9 +25,10 @@ server.use(helmet());
 server.use(express.json());
 server.use(cors());
 server.use(session({
+  name: "chocolatechip",
   resave: false,
-  saveUnitialized: false,
-  secret: "keep it secret keep it safe",
+  saveUninitialized: false,
+  secret: "chocolatechip",
   store: new KnexSessionStore({
     knex: db,
     createtable: true,
