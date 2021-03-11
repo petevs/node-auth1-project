@@ -30,7 +30,7 @@ const router = express.Router()
 
 // Don't forget to add the router to the `exports` object so it can be required in other modules
 
-router.get('/users', restricted(), async ( req, res, next) => {
+router.get('/', restricted(), async ( req, res, next) => {
   try{
     const results = await users.find()
     res.json(results)

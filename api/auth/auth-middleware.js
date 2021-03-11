@@ -16,6 +16,7 @@ function restricted() {
           message: 'You shall not pass!'
         })
       }
+      next()
     } catch(err){
       next(err)
     }
@@ -41,6 +42,7 @@ function checkUsernameFree() {
           message: 'Username taken'
         })
       }
+      next()
     } catch(err){
       next(err)
     }
@@ -67,6 +69,7 @@ function checkUsernameExists() {
           message: 'Invalid credentials'
         })
       }
+      next()
     } catch(err){
       next(err)
     }
@@ -84,11 +87,12 @@ function checkUsernameExists() {
 function checkPasswordLength() {
   return async ( req, res, next ) => {
     try{
-      if(req.body.password || req.body.password.length < 3){
+      if(!req.body.password || req.body.password.length < 3){
         return res.status(422).json({
           message: "Password must be longer than 3 characters"
         })
       }
+      next()
     } catch(err) {
       next(err)
     }
